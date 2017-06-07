@@ -70,6 +70,7 @@ public class WelcomeActivity extends BaseActivity {
      */
     private void runApp() {
 
+        startActivity(new Intent(mActivity,MainActivity.class));
         Log.i(TAG,"旋转跳跃");
     }
 
