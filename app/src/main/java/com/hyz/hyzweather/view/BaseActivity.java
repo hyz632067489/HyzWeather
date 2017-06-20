@@ -2,6 +2,7 @@ package com.hyz.hyzweather.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -52,11 +53,13 @@ public class BaseActivity extends FragmentActivity {
      */
 
 
-
     /**
      * 隐藏
      */
-
+    public void start(Activity activity1, Activity activity2) {
+        Intent intent = new Intent(activity1, activity2.getClass());
+        startActivity(intent);
+    }
 
     @Override
     protected void onDestroy() {

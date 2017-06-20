@@ -6,40 +6,44 @@
     android:layout_height="match_parent">
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="hello wold" />
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical"-->
-        <!--android:visibility="gone"-->
-        <!--&gt;-->
+        <Button
+            android:id="@+id/start_download"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Download" />
 
-        <!--<com.youth.banner.Banner-->
-            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-            <!--android:id="@+id/banner"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="150dp" />-->
+        <Button
+            android:id="@+id/pause_download"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pause Download" />
 
-    <!--</LinearLayout>-->
+        <Button
+            android:id="@+id/cancel_download"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel Download" />
 
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:text="hello wold"
-    />
-    <!--<FrameLayout-->
-        <!--android:id="@+id/content_frame"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/left_drawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="#111"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#111"/>
+        android:dividerHeight="0dp" />
 
 </android.support.v4.widget.DrawerLayout>

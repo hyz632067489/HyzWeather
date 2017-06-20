@@ -35,6 +35,10 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".updateapp.DownloadService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity android:name=".view.MainActivity" />
         <activity android:name=".view.KqdkActivity" />
