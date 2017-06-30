@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.hyz.hyzweather.R;
-import com.hyz.hyzweather.view.KqdkActivity;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 
@@ -97,7 +96,7 @@ public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.
             ImageItem item = mData.get(position);
             if (isAdded && position == getItemCount() - 1) {
                 iv_img.setImageResource(R.mipmap.ic_launcher);
-                clickPosition = KqdkActivity.IMAGE_ITEM_ADD;
+//                clickPosition = KqdkActivity.IMAGE_ITEM_ADD;
             } else {
                 ImagePicker.getInstance().getImageLoader().displayImage((Activity) mContext, item.path, iv_img, 0, 0);
                 clickPosition = position;

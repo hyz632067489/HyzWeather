@@ -41,7 +41,6 @@
             android:exported="true" />
 
         <activity android:name=".view.MainActivity" />
-        <activity android:name=".view.KqdkActivity" />
         <activity android:name=".view.WxDemoActivity"/>
         <activity android:name="com.lzy.imagepicker.ui.ImagePreviewDelActivity"/>
     </application>

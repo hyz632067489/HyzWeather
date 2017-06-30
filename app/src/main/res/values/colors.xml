@@ -5,4 +5,10 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="white">#ffffffff</color>
+
+
+    <color name="nav_item_icon">#1abc9c</color>
+
+
+
 </resources>

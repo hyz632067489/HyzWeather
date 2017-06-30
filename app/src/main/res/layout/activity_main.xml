@@ -1,49 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/id_drawerlayout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.hyz.hyzweather.view.MainActivity">
+
+    <!--<include-->
+    <!--layout="@layout/content_main_1"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
 
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <TextView
+        android:layout_height="match_parent" >
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/main_appbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="hello wold" />
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/start_download"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/main_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"   />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <FrameLayout
+            android:id="@+id/main_fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Start Download" />
+            android:layout_height="match_parent"
+            android:background="@color/white" />
 
-        <Button
-            android:id="@+id/pause_download"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pause Download" />
+    </android.support.design.widget.CoordinatorLayout>
 
-        <Button
-            android:id="@+id/cancel_download"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cancel Download" />
-
-    </LinearLayout>
-
-
-    <ListView
-        android:id="@+id/left_drawer"
-        android:layout_width="240dp"
+    <android.support.design.widget.NavigationView
+        android:id="@+id/main_nav_view"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#111"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp" />
+        app:headerLayout="@layout/nav_head_main"
+        app:itemIconTint="@color/nav_item_icon"
+        app:menu="@menu/nav_menu" />
 
 </android.support.v4.widget.DrawerLayout>

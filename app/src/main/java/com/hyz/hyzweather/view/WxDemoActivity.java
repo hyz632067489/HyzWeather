@@ -17,7 +17,7 @@ import com.lzy.imagepicker.view.CropImageView;
 
 import java.util.ArrayList;
 
-public class WxDemoActivity extends BaseActivity implements  ImagePickerAdapter.OnRecyclerViewItemClickListener{
+public abstract class WxDemoActivity extends BaseActivity implements  ImagePickerAdapter.OnRecyclerViewItemClickListener{
 
     public static final int IMAGE_ITEM_ADD = -1;
     public static final int REQUEST_CODE_SELECT = 100;

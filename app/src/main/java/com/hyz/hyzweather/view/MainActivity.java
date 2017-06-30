@@ -1,129 +1,181 @@
 package com.hyz.hyzweather.view;
 
-import android.Manifest;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.os.Build;
+import android.os.Handler;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.hyz.hyzweather.R;
-import com.hyz.hyzweather.bean.CommonModel;
-import com.hyz.hyzweather.updateapp.DownloadService;
-import com.hyz.hyzweather.updateapp.UpdateManager;
+import com.hyz.hyzweather.util.ImageLoader;
+import com.hyz.hyzweather.util.ResourceUtil;
+import com.hyz.hyzweather.util.ShareUtil;
+import com.hyz.hyzweather.util.SnackBarUtil;
+import com.hyz.hyzweather.view.activity.SetActivity;
+import com.hyz.hyzweather.view.fragment.BaseFragment;
+import com.hyz.hyzweather.view.fragment.TypeFragment;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
-public class MainActivity extends BaseActivity implements View.OnClickListener{
+public class MainActivity extends BaseActivity {
+    private String mCurrentType;
+    private boolean isBackPressed;
+    private Map<String, BaseFragment> mTypeFragments;
 
-
-    int[] images = {R.mipmap.ic_launcher, R.mipmap.default_image, R.mipmap.grid_camera};
-    String[] titles = {"1", "2", "3"};
-    List<CommonModel> imageUrls = new ArrayList<>();
-
-    CommonModel model;
-
-    @BindView(R.id.left_drawer)
-    ListView leftDrawer;
-
-
-    private DownloadService.DownloadBinder downloadBinder;
-
-    private ServiceConnection connection = new ServiceConnection() {
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadBinder = (DownloadService.DownloadBinder) service;
-        }
-
-    };
-
+    @BindView(R.id.main_nav_view)
+    NavigationView mNavView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.main_toolbar)
+    Toolbar mToolbar;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-
-        Button startDownload = (Button) findViewById(R.id.start_download);
-        Button pauseDownload = (Button) findViewById(R.id.pause_download);
-        Button cancelDownload = (Button) findViewById(R.id.cancel_download);
-        startDownload.setOnClickListener(this);
-        pauseDownload.setOnClickListener(this);
-        cancelDownload.setOnClickListener(this);
-
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
-        }
-
-        getDatas();
-
-        new UpdateManager(mContext).checkUpdate(false);
-
-    }
-
-    private void getDatas() {
-
-        for (int i = 0; i < images.length; i++) {
-            model = new CommonModel();
-            model.setIcon(images[i]);
-            imageUrls.add(model);
-        }
+    protected int initLayoutId() {
+        return R.layout.activity_main;
     }
 
     @Override
-    public void onClick(View v) {
-        if (downloadBinder == null) {
-            return;
-        }
-        switch (v.getId()) {
-            case R.id.start_download:
-                String url = "http://oa.ybqtw.org.cn/api/appFile/ZxtPhone1.3.5.apk";
-                downloadBinder.startDownload(url);
-                break;
-            case R.id.pause_download:
-                downloadBinder.pauseDownload();
-                break;
-            case R.id.cancel_download:
-                downloadBinder.cancelDownload();
-                break;
-            default:
-                break;
-        }
+    protected void initView() {
+        initStatusBar();
+
+        initDrawer();
+        initNavigationView();
+
+        doReplace(ResourceUtil.resToStr(mContext, R.string.gank));
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case 1:
-                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "拒绝权限将无法使用程序", Toast.LENGTH_SHORT).show();
-                    finish();
+    protected void initData() {
+        mTypeFragments = new HashMap<>();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_share:
+                ShareUtil.share(mContext, ResourceUtil.resToStr(mContext, R.string.main_share_content));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void initDrawer() {
+        setSupportActionBar(mToolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        //设置左上角显示三道横线
+        toggle.syncState();
+        mToolbar.setTitle(R.string.app_name);
+    }
+
+    private void initNavigationView() {
+        ImageView icon = (ImageView) mNavView.getHeaderView(0).findViewById(R.id.nav_head_icon);
+        ImageLoader.loadCircle(mContext, R.drawable.icon, icon);
+        TextView name = (TextView) mNavView.getHeaderView(0).findViewById(R.id.nav_head_name);
+        name.setText(R.string.app_name);
+        mNavView.setCheckedItem(R.id.nav_gank);//设置默认选中
+        //设置NavigationView对应menu item的点击事情
+        mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_gank: //干货
+                        doReplace(ResourceUtil.resToStr(mContext, R.string.gank));
+                        break;
+                    case R.id.nav_girl: //妹子
+                        doReplace(ResourceUtil.resToStr(mContext, R.string.girl));
+                        break;
+                    case R.id.nav_set:
+                        openSet();
+                        break;
+                    case R.id.nav_about:
+                        break;
                 }
-                break;
-            default:
+                //隐藏NavigationView
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+    }
+
+    private void doReplace(String type) {
+        if (!type.equals(mCurrentType)) {
+            replaceFragment(TypeFragment.newInstance(type), type, mCurrentType);
+            mCurrentType = type;
+        }
+    }
+
+    private void replaceFragment(BaseFragment fragment, String tag, String lastTag) {
+        if (mTypeFragments.get(tag) == null) {
+            mTypeFragments.put(tag, fragment);
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.main_fragment_container, fragment, tag)
+                    .commit();
+        }
+
+        if (mTypeFragments.get(lastTag) != null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.hide(mTypeFragments.get(lastTag))
+                    .show(mTypeFragments.get(tag))
+                    .commit();
+        }
+    }
+
+    private void openSet() {
+        Intent intent = new Intent(mContext, SetActivity.class);
+        startActivity(intent);
+    }
+
+    private void initStatusBar() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            //将侧边栏顶部延伸至status bar
+            mDrawerLayout.setFitsSystemWindows(true);
+            //将主页面顶部延伸至status bar
+            mDrawerLayout.setClipToPadding(false);
         }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(connection);
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            if (isBackPressed) {
+                super.onBackPressed();
+                return;
+            }
+
+            isBackPressed = true;
+
+            SnackBarUtil.show(mDrawerLayout, R.string.back_pressed_tip);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isBackPressed = false;
+                }
+            }, 2000);
+        }
     }
 }
